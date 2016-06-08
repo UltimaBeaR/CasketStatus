@@ -1,0 +1,22 @@
+﻿@model CasketStatusWebSite.Models.CurrentStatusViewModel
+@{
+    ViewBag.Title = "Панель управления";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Админка</h1>
+
+        <h1>Статус: @Model.StatusCode</h1>
+
+        @{
+            var newModel = new CasketStatusWebSite.Models.CurrentStatusViewModel()
+            {
+                StatusCode = CasketStatusWebSite.Logic.StatusCode.WorkScheduled,
+                ScheduledWorkDate = DateTime.Now
+            };
+        }
+
+        @*@Html.ActionLink("Изменить", "ChangeStatus", new { changedStatus = newModel })*@
+    </div>
+</div>

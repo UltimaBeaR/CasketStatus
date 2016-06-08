@@ -1,9 +1,16 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model CasketStatusWebSite.Models.CurrentStatusViewModel
+@{
+    ViewBag.Title = "Статус";
 }
 
 <div class="row">
     <div class="col-md-12">
-        <h1>Статус</h1>
+        <h1>Статус: @Model.StatusCode</h1>
+        @{
+            if (Model.StatusCode == CasketStatusWebSite.Logic.StatusCode.WorkScheduled)
+            {
+                <h1>Работы запланированы на @Model.ScheduledWorkDate</h1>
+            }
+        }
     </div>
 </div>

@@ -13,6 +13,13 @@ namespace CasketStatusWebSite
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            // Route для restful api
+            routes.MapRoute(
+                name: "Api",
+                url: "api/{action}",
+                defaults: new { controller = "RestfulApi" }
+            );
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

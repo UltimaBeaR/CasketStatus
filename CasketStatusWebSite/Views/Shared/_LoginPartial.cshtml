@@ -7,6 +7,7 @@
         <ul class="nav navbar-nav navbar-right">
             <!-- ToDo: Разобраться со стилями - имя пользователя съезжает, когда окно сужается до "мобильного" вида -->
             <li class="navbar-text">@User.Identity.GetUserName()</li>
+            <li>@Html.ActionLink("Панель управления", "Index", "AdminPanel")</li>
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Выход</a></li>
         </ul>
     }

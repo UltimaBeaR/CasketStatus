@@ -8,6 +8,7 @@ namespace CasketStatusWebSite
     {
         public void Configuration(IAppBuilder app)
         {
+            // Конфигурируем identity
             ConfigureAuth(app);
         }
     }

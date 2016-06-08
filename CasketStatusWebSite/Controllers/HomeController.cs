@@ -6,24 +6,12 @@ using System.Web.Mvc;
 
 namespace CasketStatusWebSite.Controllers
 {
+    // Контроллер для основных страниц (Пока только главная страница со статусом)
     public class HomeController : Controller
     {
+        // Основная страница, показывающая статус работы сервиса Ларец (casket)
         public ActionResult Index()
         {
-            return View();
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }

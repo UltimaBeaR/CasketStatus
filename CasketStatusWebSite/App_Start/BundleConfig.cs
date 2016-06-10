@@ -20,12 +20,31 @@ namespace CasketStatusWebSite
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
+                      "~/Scripts/bootstrap.min.js",
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
+                      "~/Content/bootstrap.min.css",
+                      "~/Content/bootstrap-theme.min.css",
+                      "~/Content/bootstrap-datetimepicker.min.css",
                       "~/Content/site.css"));
+
+            /*
+            // Bootstrap пикер даты (http://tarruda.github.io/bootstrap-datetimepicker/)
+            bundles.Add(new ScriptBundle("~/bundles/datetimepicker").Include(
+                    "~/Scripts/bootstrap-datetimepicker.min.js"
+                ));
+            bundles.Add(new StyleBundle("~/Content/css/datetimepicker").Include(
+                    "~/Content/bootstrap-datetimepicker.min.css"
+                ));
+            */
+
+            // moment.js - для работы с датами
+            bundles.Add(new ScriptBundle("~/bundles/datetimepicker").Include(
+                    "~/Scripts/moment.min.js",
+                    "~/Scripts/moment-with-locales.min.js",
+                    "~/Scripts/bootstrap-datetimepicker.min.js"
+                ));
         }
     }
 }

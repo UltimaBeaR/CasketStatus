@@ -76,7 +76,8 @@ namespace CasketStatusWebSite.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Index", "AdminPanel"); //< После удачного входа будем переходить в админку
+                    //return RedirectToLocal(returnUrl);
                 default:
                     ModelState.AddModelError("", "Неправильная пара логин/пароль");
                     return View(model);

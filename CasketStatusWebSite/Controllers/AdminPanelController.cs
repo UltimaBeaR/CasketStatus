@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using CasketStatusWebSite.Logic;
@@ -59,6 +60,7 @@ namespace CasketStatusWebSite.Controllers
         }
 
         // Основная страница админки
+        [HttpGet]
         public ActionResult Index()
         {
             CurrentStatusViewModel viewModel = new CurrentStatusViewModel();
@@ -72,17 +74,34 @@ namespace CasketStatusWebSite.Controllers
             return View(viewModel);
         }
 
-        // ToDo: узнать, как передать сложные данные в параметре
-        /*
+        // Основная страница админки: изменение текущего статуса
         [HttpPost]
-        // Изменение статуса
-        public ActionResult ChangeStatus(CurrentStatusViewModel changedStatus)
+        [ActionName("Index")]
+        public ActionResult Index_UpdateCurrentStatus(CurrentStatusViewModel model)
         {
-            //_casketStatusRepository.CurrentStatus = new CurrentStatus() { Code = StatusCode.WorkScheduled, ScheduledWorkDate = System.DateTime.Now };
+            if (!ModelState.IsValid)
+            {
+                if (!ModelState.IsValidField(nameof(CurrentStatusViewModel.ScheduledWorkDate)))
+                    ModelState.AddModelError("", $"Дата была введена неверно");
+                else
+                    throw new HttpRequestValidationException();
+                   
+                return View(model);
+            }
 
-            return View("Index", changedStatus);
+            var now = DateTime.Now;
+            if (model.StatusCode == StatusCode.WorkScheduled && model.ScheduledWorkDate < now)
+            {
+                ModelState.AddModelError("", $"Дата запланированных работ не может быть раньше текущего момента времени (Сейчас {now})");
+                return View(model);
+            }
+
+            // Если все ок, обновляем текущий статус
+            _casketStatusRepository.CurrentStatus = new CurrentStatus() { Code = model.StatusCode, ScheduledWorkDate = model.ScheduledWorkDate };
+
+            ViewBag.CurrentStatusUpdated = true; //< Чтобы вьюшка видела, что статус был обновлен
+            return View(model);
         }
-        */
 
         protected override void Dispose(bool disposing)
         {

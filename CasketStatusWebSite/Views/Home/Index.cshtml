@@ -1,16 +1,27 @@
-﻿@model CasketStatusWebSite.Models.CurrentStatusViewModel
+﻿@using CasketStatusWebSite.Logic
+
+@model CasketStatusWebSite.Models.CurrentStatusViewModel
 @{
     ViewBag.Title = "Статус";
 }
 
 <div class="row">
     <div class="col-md-12">
-        <h1>Статус: @Model.StatusCode</h1>
-        @{
-            if (Model.StatusCode == CasketStatusWebSite.Logic.StatusCode.WorkScheduled)
-            {
-                <h1>Работы запланированы на @Model.ScheduledWorkDate</h1>
+        <h1>@Model.StatusCode.GetHumanReadableText()</h1>
+        <h4>
+            @{
+                // Получаем детальное описание статус-кода
+                var statusDescription = Model.StatusCode.GetHumanReadableText(true);
+
+                if (Model.StatusCode == StatusCode.WorkScheduled)
+                {
+                    // Если работа запланирована - всовываем дату в описание
+                    statusDescription = string.Format(statusDescription, Model.ScheduledWorkDate);
+                }
+
+                // Рендерим описание на страничку
+                @(statusDescription);
             }
-        }
+        </h4>
     </div>
 </div>

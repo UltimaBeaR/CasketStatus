@@ -1,22 +1,121 @@
-﻿@model CasketStatusWebSite.Models.CurrentStatusViewModel
+﻿@using CasketStatusWebSite.Logic
+
+@model CasketStatusWebSite.Models.CurrentStatusViewModel
 @{
     ViewBag.Title = "Панель управления";
 }
 
+<h2>@ViewBag.Title</h2>
+<hr />
 <div class="row">
     <div class="col-md-12">
-        <h1>Админка</h1>
 
-        <h1>Статус: @Model.StatusCode</h1>
+        @* Форма редактирования текущего статуса *@
+        @using (Html.BeginForm("Index", "AdminPanel", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            // Сообщения (валидация и сообщение о успешном обновлении)
 
-        @{
-            var newModel = new CasketStatusWebSite.Models.CurrentStatusViewModel()
+            // Если установлен флаг, что текущий статус обновлен - пишем сообщение
+            if (ViewData.ContainsKey(nameof(ViewBag.CurrentStatusUpdated)) && ViewBag.CurrentStatusUpdated)
             {
-                StatusCode = CasketStatusWebSite.Logic.StatusCode.WorkScheduled,
-                ScheduledWorkDate = DateTime.Now
-            };
-        }
+                // <ul><li> делаем просто, чтобы было стилистически похоже на validation summary (там оно так и идет в виде списка)
+                <ul><li><div class="text-info">Текущий статус обновлен</div></li></ul>
+            }
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        @*@Html.ActionLink("Изменить", "ChangeStatus", new { changedStatus = newModel })*@
+            // Статус-код
+            <div class="form-group">
+                @Html.LabelFor(m => m.StatusCode, new { @class = "col-md-1 control-label" })
+                <div class="col-md-4">
+                        @* Делаем radio button-ы для каждого из значений StatusCode *@
+                        @foreach (StatusCode statusCodeValue in Enum.GetValues(typeof(StatusCode)))
+                        {
+                            <div class="statuscode-option">
+                                @Html.RadioButtonFor(m => m.StatusCode, statusCodeValue)
+                                <span class="text-left">@statusCodeValue.GetHumanReadableText()</span>
+                            </div>
+                        }
+                </div>
+            </div>
+
+            // Дата запланированных работ
+            <div class="form-group" id="scheduledDateBlock" style="display:none">
+                @Html.LabelFor(m => m.ScheduledWorkDate, new { @class = "col-md-1 control-label" })
+                <div class="col-md-4">
+                    <div class='input-group date'>
+                        <input type='text' name="@nameof(Model.ScheduledWorkDate)" class="form-control" />
+                        @*@Html.TextBoxFor(m => m.ScheduledWorkDate, new { @class = "form-control" })*@
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            // Кнопочка сохранения
+            <div class="form-group">
+                <div class="col-md-offset-1 col-md-4">
+                    <input type="submit" value="Сохранить" class="btn btn-default" />
+                </div>
+            </div>
+        }
     </div>
 </div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/datetimepicker")
+
+    @{
+        // Прописываем даты для DateTimePicker
+
+        const string jsDateFormat = "yyyy-MM-ddTHH:mm:ss";
+        var minDate = DateTime.Now;
+
+
+        var defaultDate = Model.ScheduledWorkDate;
+        if (defaultDate < minDate)
+        {
+            defaultDate = minDate;
+        }
+    }
+
+    <script type="text/javascript">
+        $(function () {
+            // Запускаем работу DateTimePicker
+            $('#scheduledDateBlock .date').datetimepicker({
+                defaultDate: '@defaultDate.ToString(jsDateFormat)',
+                minDate: '@minDate.ToString(jsDateFormat)',
+                format: 'DD.MM.YYYY HH:mm:ss',
+                locale: 'ru',
+                showTodayButton: false,
+                showClose: true,
+                showClear: false,
+                toolbarPlacement: 'top'
+            });
+
+            // Чето глючит изначальная установка даты в date picker-е. Ставлю вручную в input
+            $('#scheduledDateBlock .date input').val('@defaultDate.ToString()');
+
+            // Получаем radio-button со значением StatusCode.WorkScheduled
+            var workScheduledRadioButton = $(".statuscode-option input[value='@(nameof(StatusCode.WorkScheduled))']")[0];
+
+            // Обработка изменения выбора в radio-button-ах для status code
+            var onRadioButtonChecked = function () {
+                if (workScheduledRadioButton.checked) {
+                    $("#scheduledDateBlock").show();
+                }
+                else {
+                    $("#scheduledDateBlock").hide();
+                }
+            }
+
+            // Вешаем обработку изменения весь список радио-кнопок со статусом
+            $(".statuscode-option input").on("change", function () {
+                onRadioButtonChecked();
+            });
+
+            // Вызываем обработку изменения радио-кнопок при загрузке стриницы, так как события изменения изначально не вызываются
+            onRadioButtonChecked();
+        });
+    </script>
+}

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CasketStatusWebSite.Logic
 {
@@ -10,10 +7,13 @@ namespace CasketStatusWebSite.Logic
     public enum StatusCode : int
     {
         // Все работает штатно, работы по обновлению не ведутся
+        [HumanReadableText("Все работает штатно", DetailedText = "Работы по обновлению не ведутся. Ваши мечты сбываются прямо сейчас!")]
         Available = 0,
         // Сервис недоступен, ведутся технические работы
+        [HumanReadableText("Сервис недоступен", DetailedText = "В данный момент ведутся технические работы (В среднем это занимает от получаса до полутора часов). Сожалеем за причиненные неудобства :(")]
         Unavailable = 1,
         // Сейчас все работает штатно, но на определенную дату запланированы работы
+        [HumanReadableText("Запланированы работы", DetailedText = "Все работает штатно, но на {0} запланированы работы технического характера. Сервис будет недоступен на некоторое время.")]
         WorkScheduled = 2
     }
 
@@ -53,24 +53,24 @@ namespace CasketStatusWebSite.Logic
         {
             get
             {
-                return GetCurrentStatus();
+                return GetOrCreateCurrentStatus();
             }
 
             set
             {
                 // Вызываем get, чтобы удостовериться, что запись существует
-                var queriedStatus = GetCurrentStatus();
+                var queriedStatus = GetOrCreateCurrentStatus();
 
                 // Обновляем запись
 
-                value.Id = queriedStatus.Id;
+                value.Id = queriedStatus.Id; //< Чтобы EF не ругался
                 _dbContext.Entry(queriedStatus).CurrentValues.SetValues(value);
                 _dbContext.SaveChanges();
             }
         }
 
         // Получает текущий статус. В случае если в БД такой записи нет - создаст запись со значением available
-        private CurrentStatus GetCurrentStatus()
+        private CurrentStatus GetOrCreateCurrentStatus()
         {
             // Запрос на получение текущего статуса
             var getCurrentStatusQuery = _dbContext.CurrentStatus.Take(1);
@@ -86,6 +86,7 @@ namespace CasketStatusWebSite.Logic
                 {
                     try
                     {
+                        // double checked locking pattern
                         statusExists = getCurrentStatusQuery.Count() == 1;
 
                         // Если статуса все еще нет

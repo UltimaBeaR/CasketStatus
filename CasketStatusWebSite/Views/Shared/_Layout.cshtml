@@ -27,8 +27,8 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - ЗАО "Тридевятое Царство" @(Request.IsAuthenticated ? new MvcHtmlString("") : Html.ActionLink("Вход для администраторов", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" }))</p>
+        <footer class="panel-footer">
+            <p>&copy; @DateTime.Now.Year - ЗАО "Тридевятое Царство"@{ if (!Request.IsAuthenticated) { @Html.Raw("&nbsp;&nbsp;&nbsp;") @Html.ActionLink("Вход для администраторов", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" }) } }</p>
         </footer>
     </div>
 

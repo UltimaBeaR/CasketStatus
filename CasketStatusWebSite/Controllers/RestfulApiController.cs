@@ -1,6 +1,7 @@
 ﻿using CasketStatusWebSite.Logic;
 using Newtonsoft.Json;
 using System.Web.Mvc;
+using System.Collections.Generic;
 
 namespace CasketStatusWebSite.Controllers
 {
@@ -17,32 +18,33 @@ namespace CasketStatusWebSite.Controllers
         }
 
         // Получение статуса. GET http://hostname/api/status
-        // Ответ приходит в виде Json с текущим статусом
-        public ActionResult Status()
+        // Ответ приходит в виде content-type=application/json с текущим статусом
+        [ActionName("status")]
+        [HttpGet]
+        public ActionResult Status(bool? description)
         {
+            bool needsDescription = description ?? false;
+
             // Получаем текущий статус работы casket
             var currentStatus = _casketStatusRepository.CurrentStatus;
 
             // Формируем объект json
 
-            object jsonObj;
-            switch (currentStatus.Code)
+            Dictionary<string, object> jsonObj = new Dictionary<string, object>();
+
+            jsonObj["code"] = (int)currentStatus.Code;
+
+            if (currentStatus.Code == StatusCode.WorkScheduled)
+                jsonObj["scheduledWorkDate"] = currentStatus.ScheduledWorkDate;
+
+            if (needsDescription)
             {
-                case StatusCode.WorkScheduled:
-                    {
-                        jsonObj = new {
-                            StatusCode = (int)currentStatus.Code,
-                            ScheduledWorkDate = currentStatus.ScheduledWorkDate
-                        };
-                        break;
-                    }
-                case StatusCode.Unavailable:
-                case StatusCode.Available:
-                default:
-                    {
-                        jsonObj = new { StatusCode = (int)currentStatus.Code };
-                        break;
-                    }
+                jsonObj["text"] = currentStatus.Code.GetHumanReadableText();
+                
+                if (currentStatus.Code == StatusCode.WorkScheduled)
+                    jsonObj["detailedText"] = string.Format(currentStatus.Code.GetHumanReadableText(true), currentStatus.ScheduledWorkDate);
+                else
+                    jsonObj["detailedText"] = currentStatus.Code.GetHumanReadableText(true);
             }
 
             // Сериализуем Json через JsonConvert. и возвращаем в виде application/json.

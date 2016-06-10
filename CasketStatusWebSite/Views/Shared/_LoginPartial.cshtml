@@ -4,9 +4,9 @@
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
         @Html.AntiForgeryToken()
+        <p class="navbar-text"><span class="text-primary">@User.Identity.GetUserName()</span></p>
         <ul class="nav navbar-nav navbar-right">
-            <!-- ToDo: Разобраться со стилями - имя пользователя съезжает, когда окно сужается до "мобильного" вида -->
-            <li class="navbar-text">@User.Identity.GetUserName()</li>
+            <li role="separator" class="divider"></li>
             <li>@Html.ActionLink("Панель управления", "Index", "AdminPanel")</li>
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Выход</a></li>
         </ul>

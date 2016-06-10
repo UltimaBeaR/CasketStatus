@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CasketStatusWebSite", "Cask
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CasketStatusWebSite.Tests", "CasketStatusWebSite.Tests\CasketStatusWebSite.Tests.csproj", "{9BE3A134-7632-44FB-BECE-DD1A525033F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CasketStatusMobileDeviceEmulator", "CasketStatusMobileDeviceEmulator\CasketStatusMobileDeviceEmulator.csproj", "{9AB5509C-3347-4F0C-8B19-FED89557B834}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9BE3A134-7632-44FB-BECE-DD1A525033F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BE3A134-7632-44FB-BECE-DD1A525033F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BE3A134-7632-44FB-BECE-DD1A525033F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AB5509C-3347-4F0C-8B19-FED89557B834}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AB5509C-3347-4F0C-8B19-FED89557B834}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AB5509C-3347-4F0C-8B19-FED89557B834}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AB5509C-3347-4F0C-8B19-FED89557B834}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
